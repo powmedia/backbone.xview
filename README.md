@@ -1,4 +1,4 @@
-backbone.xview
+Backbone.XView
 ==============
 
 Easy to use view manager for Backbone. Effortless nested views and templating.
