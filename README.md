@@ -6,7 +6,7 @@ Easy to use view manager for Backbone. Effortless nested views and templating.
 ##Usage
 
 ###Easy templating
-When styling your app it can be much easier to have all class names and tags defined in templates, rather than scattered between templates and JS code.
+When styling your app it can be much easier to have all class names and tags defined in templates, rather than scattered between templates and JS code with the `tagName` and `className` options.
 
 Backbone.XView makes this easy with the `template` and `unwrap` options:
 
