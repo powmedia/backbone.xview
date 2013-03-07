@@ -38,7 +38,9 @@
      * Constructor
      *
      * @param {Object} [options]
-     * @param {View} [options.parent]     Parent view (Passed automatically when using XView#addView)
+     * @param {View} [options.parent]       Parent view (Passed automatically when using XView#addView)
+     * @param {Function} [options.template] Compiled template, e.g. the result of _.template('<div></div>')
+     * @param {Boolean} [options.unwrap]    Whether to use only the template, so that there isn't an extra tag around the template contents
      */
     constructor: function(options) {
       options = options || {};
@@ -47,6 +49,7 @@
       this.children = {};
 
       if (options.template) this.template = options.template;
+      if (options.unwrap) this.unwrap = options.unwrap;
 
       this.rendered = false;
 

@@ -12,17 +12,19 @@ $(document).ready(function() {
 
   module('XView#constructor');
 
-  test('sets options and initial state', 3, function() {
+  test('sets options and initial state', 4, function() {
     var parent = new XView(),
         template = _.template('x');
 
     var view = new XView({
       parent: parent,
-      template: template
+      template: template,
+      unwrap: true
     });
 
     equal(view.parent, parent);
     equal(view.template, template);
+    equal(view.unwrap, true);
 
     equal(view.rendered, false);
   });
