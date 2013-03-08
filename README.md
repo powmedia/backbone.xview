@@ -4,7 +4,7 @@ Backbone.XView
 Easy to use view manager for Backbone. Effortless nested views and templating.
 
 Live interactive demo:
-http://jsbin.com/iyugul/9/edit
+http://jsbin.com/iyugul/10/edit
 
 ##Usage
 
