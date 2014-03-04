@@ -73,3 +73,8 @@ console.log(parent.$el.html());
 //All nested views will be removed
 parent.remove();
 ```
+
+
+##Changelog
+###1.1.0
+- Add proper CommonJS support

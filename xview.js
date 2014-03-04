@@ -16,12 +16,19 @@
  * Factory
  */
 ;(function(factory) {
-  if (typeof define === 'function' && define.amd) {
-      // AMD
-      define(['underscore', 'backbone'], factory);
-  } else {
-      // globals
-      factory(_, Backbone);
+  // AMD
+  if (typeof define === 'function' && define.amd) {      
+    define(['underscore', 'backbone'], factory);
+  }
+
+  //CommonJS
+  else if (typeof exports !== 'undefined') {
+    factory(require('underscore'), require('backbone'));
+  }
+
+  //Globals
+  else {
+    factory(_, Backbone);
   }
 }(function(_, Backbone) {
 
