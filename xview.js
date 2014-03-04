@@ -146,7 +146,7 @@
         _.extend(data, this.renderHelpers);
 
         //Render HTML
-        html = $(this.template(data));
+        html = Backbone.$(this.template(data));
 
         //If using unwrap and this is an update, only replace the main element contents
         //This ensures the view that's actually in the DOM is updated
