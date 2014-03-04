@@ -76,5 +76,5 @@ parent.remove();
 
 
 ##Changelog
-###1.1.0
+###1.1.x
 - Add proper CommonJS support
