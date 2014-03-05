@@ -76,5 +76,8 @@ parent.remove();
 
 
 ##Changelog
+###1.2.x
+- Add CollectionView, accessible through XView.Collection or Backbone.XView.Collection
+
 ###1.1.x
 - Add proper CommonJS support

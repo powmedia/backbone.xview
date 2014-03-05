@@ -1,7 +1,5 @@
 /**
- * Tests from Backbone View, adjusted to test XView
- * When updating for a new Backbone version, just paste the view test contents
- * below and do a find/replace for Backbone.View -> Backbone.XView
+ * Tests for XView methods
  */
 
 

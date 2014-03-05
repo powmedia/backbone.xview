@@ -35,7 +35,7 @@
 
 
   /**
-   * Source
+   * Main view
    */
   var XView = Backbone.View.extend({
     //Helpers functions (and properties) that are sent to the template on render
@@ -47,7 +47,7 @@
      * @param {Object} [options]
      * @param {View} [options.parent]       Parent view (Passed automatically when using XView#addView)
      * @param {Function} [options.template] Compiled template, e.g. the result of _.template('<div></div>')
-     * @param {Boolean} [options.unwrap]    Whether to use only the template, so that there isn't an extra tag around the template contents
+     * @param {Boolean} [options.unwrap]    Whether to use only the template, so that there isn't an extra tag around the template contents. NOTE: If using unwrap, there must be one single parent element in the template. 
      */
     constructor: function(options) {
       options = options || {};
@@ -242,15 +242,120 @@
   });
 
 
+  /**
+   * CollectionView
+   * Renders a list of ItemViews representing a collection
+   */
+  var CollectionView = XView.extend({
+    tagName: 'ul',
+
+    //jQuery selector where items will be inserted. If not set, will default to the root element
+    itemContainer: null,
+
+    //Shown in place of items when the collection is empty
+    noResultsTemplate: _.template('<li>No results</li>'),
+
+    /**
+     * Constructor
+     *
+     * @param {Object} options
+     * @param {Collection} options.collection   Collection to render
+     * @param {XView} options.itemView          Constructor (not instance) for an item view
+     */
+    constructor: function(options) {
+      XView.prototype.constructor.call(this, options);
+
+      options = options || {};
+
+      if (options.collection) this.collection = options.collection;
+      if (!this.collection) throw new Error('collection is required');
+
+      if (options.itemView) this.itemView = options.itemView;
+      if (!this.itemView) throw new Error('itemView is required');
+
+      this.listenTo(this.collection, 'add', this.addItem);
+      this.listenTo(this.collection, 'remove', this.removeItem);
+      this.listenTo(this.collection, 'reset', this.resetItems);
+
+      this.resetItems();
+    },
+
+    /**
+     * @param {Model} model
+     */
+    addItem: function(model) {
+      var view = new this.itemView({
+        model: model,
+        listView: this, //TODO: remove listView in favour of 'parent'?
+        parent: this
+      });
+
+      this.addView(this.itemContainer || null, { id: model.cid }, view);
+
+      if (this.rendered) {
+        this.renderView(model.cid);
+      }
+    },
+
+    /**
+     * @param {Model} model
+     */
+    removeItem: function(model) {
+      this.removeView(model.cid);
+    },
+
+    /**
+     * Removes existing item views and adds the current collection contents
+     */
+    resetItems: function() {
+      this.removeViews();
+
+      this.collection.each(_.bind(this.addItem, this));
+
+      if (!this.rendered) return;
+
+      var $container = this.getItemContainer();
+
+      if (this.collection.length) {
+        $container.html('');
+        this.renderViews();
+      } else {
+        $container.html(this.noResultsTemplate());
+      }
+    },
+
+    /**
+     * Get the item container (if rendered). Uses the this.itemContainer selector if available;
+     * otherwise the main element is returned
+     *
+     * @return {jQuery}
+     */
+    getItemContainer: function() {
+      if (!this.rendered) throw new Error('View has not yet been rendered');
+
+      var $el;
+
+      if (this.itemContainer) {
+        $el = this.$(this.itemContainer);
+      } else {
+        $el = this.$el;
+      }
+
+      return $el;
+    }
+  });
+
 
   /**
    * Exports
    */
+  XView.Collection = CollectionView;
+
   Backbone.XView = XView;
 
   //For use in NodeJS
   if (typeof module != 'undefined') module.exports = XView;
   
-  return Backbone;
+  return Backbone.XView;
 
 }));
