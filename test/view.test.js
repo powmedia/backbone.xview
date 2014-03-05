@@ -1,7 +1,7 @@
 /**
  * Tests from Backbone View, adjusted to test XView
  * When updating for a new Backbone version, just paste the view test contents
- * below and do a find/replace for Backbone.View -> Backbone.XView
+ * below and do a find/replace for Backbone.XView -> Backbone.XView
  */
 
 
@@ -9,10 +9,10 @@ $(document).ready(function() {
 
   var view;
 
-  module("Backbone.View", {
+  module("View", {
 
     setup: function() {
-      view = new Backbone.View({
+      view = new Backbone.XView({
         id        : 'test-view',
         className : 'test-view',
         other     : 'non-special-option'
@@ -28,13 +28,13 @@ $(document).ready(function() {
   });
 
   test("jQuery", 1, function() {
-    var view = new Backbone.View;
+    var view = new Backbone.XView;
     view.setElement('<p><a><b>test</b></a></p>');
     strictEqual(view.$('a b').html(), 'test');
   });
 
   test("initialize", 1, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       initialize: function() {
         this.one = 1;
       }
@@ -46,7 +46,7 @@ $(document).ready(function() {
   test("delegateEvents", 6, function() {
     var counter1 = 0, counter2 = 0;
 
-    var view = new Backbone.View({el: '#testElement'});
+    var view = new Backbone.XView({el: '#testElement'});
     view.increment = function(){ counter1++; };
     view.$el.on('click', function(){ counter2++; });
 
@@ -68,7 +68,7 @@ $(document).ready(function() {
   });
 
   test("delegateEvents allows functions for callbacks", 3, function() {
-    var view = new Backbone.View({el: '<p></p>'});
+    var view = new Backbone.XView({el: '<p></p>'});
     view.counter = 0;
 
     var events = {
@@ -91,7 +91,7 @@ $(document).ready(function() {
 
 
   test("delegateEvents ignore undefined methods", 0, function() {
-    var view = new Backbone.View({el: '<p></p>'});
+    var view = new Backbone.XView({el: '<p></p>'});
     view.delegateEvents({'click': 'undefinedMethod'});
     view.$el.trigger('click');
   });
@@ -99,7 +99,7 @@ $(document).ready(function() {
   test("undelegateEvents", 6, function() {
     var counter1 = 0, counter2 = 0;
 
-    var view = new Backbone.View({el: '#testElement'});
+    var view = new Backbone.XView({el: '#testElement'});
     view.increment = function(){ counter1++; };
     view.$el.on('click', function(){ counter2++; });
 
@@ -122,7 +122,7 @@ $(document).ready(function() {
   });
 
   test("_ensureElement with DOM node el", 1, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       el: document.body
     });
 
@@ -130,24 +130,24 @@ $(document).ready(function() {
   });
 
   test("_ensureElement with string el", 3, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       el: "body"
     });
     strictEqual(new View().el, document.body);
 
-    View = Backbone.View.extend({
+    View = Backbone.XView.extend({
       el: "#testElement > h1"
     });
     strictEqual(new View().el, $("#testElement > h1").get(0));
 
-    View = Backbone.View.extend({
+    View = Backbone.XView.extend({
       el: "#nonexistent"
     });
     ok(!new View().el);
   });
 
   test("with className and id functions", 2, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       className: function() {
         return 'className';
       },
@@ -161,7 +161,7 @@ $(document).ready(function() {
   });
 
   test("with attributes", 2, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       attributes: {
         id: 'id',
         'class': 'class'
@@ -173,7 +173,7 @@ $(document).ready(function() {
   });
 
   test("with attributes as a function", 1, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       attributes: function() {
         return {'class': 'dynamic'};
       }
@@ -186,7 +186,7 @@ $(document).ready(function() {
     var count = 0;
     var $el = $('<p></p>');
 
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       el: $el,
       events: {
         click: function() {
@@ -211,7 +211,7 @@ $(document).ready(function() {
   test("custom events, with namespaces", 2, function() {
     var count = 0;
 
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       el: $('body'),
       events: function() {
         return {"fake$event.namespaced": "run"};
@@ -233,7 +233,7 @@ $(document).ready(function() {
   test("#1048 - setElement uses provided object.", 2, function() {
     var $el = $('body');
 
-    var view = new Backbone.View({el: $el});
+    var view = new Backbone.XView({el: $el});
     ok(view.$el === $el);
 
     view.setElement($el = $($el));
@@ -244,7 +244,7 @@ $(document).ready(function() {
     var button1 = $('<button></button>');
     var button2 = $('<button></button>');
 
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       events: {
         click: function(e) {
           ok(view.el === e.target);
@@ -260,7 +260,7 @@ $(document).ready(function() {
   });
 
   test("#1172 - Clone attributes object", 2, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       attributes: {foo: 'bar'}
     });
 
@@ -272,7 +272,7 @@ $(document).ready(function() {
   });
 
   test("#1228 - tagName can be provided as a function", 1, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       tagName: function() {
         return 'p';
       }
@@ -282,7 +282,7 @@ $(document).ready(function() {
   });
 
   test("views stopListening", 0, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       initialize: function() {
         this.listenTo(this.model, 'all x', function(){ ok(false); }, this);
         this.listenTo(this.collection, 'all x', function(){ ok(false); }, this);
@@ -300,7 +300,7 @@ $(document).ready(function() {
   });
 
   test("Provide function for el.", 2, function() {
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       el: function() {
         return "<p><a></a></p>";
       }
@@ -314,7 +314,7 @@ $(document).ready(function() {
   test("events passed in options", 1, function() {
     var counter = 0;
 
-    var View = Backbone.View.extend({
+    var View = Backbone.XView.extend({
       el: '#testElement',
       increment: function() {
         counter++;
