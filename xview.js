@@ -249,11 +249,14 @@
   var CollectionView = XView.extend({
     tagName: 'ul',
 
-    //jQuery selector where items will be inserted. If not set, will default to the root element
-    itemContainer: null,
+    //Selector string for where items will be inserted. If not set, will default to the root element
+    listSelector: null,
 
-    //Shown in place of items when the collection is empty
-    noResultsTemplate: _.template('<li>No results</li>'),
+    //Selector string for content to show if there are no items
+    fallbackSelector: null,
+
+    //Selector string for content to show if there are no items
+    loadingSelector: null,
 
     /**
      * Constructor
@@ -277,7 +280,26 @@
       this.listenTo(this.collection, 'remove', this.removeItem);
       this.listenTo(this.collection, 'reset', this.resetItems);
 
+      this.listenTo(this.collection, 'request', function() {
+        this.showLoading();
+        this.hideFallback();
+      });
+
+      this.listenTo(this.collection, 'sync', function() {
+        this.hideLoading();
+        this.toggleFallback();
+      });
+
       this.resetItems();
+    },
+
+    render: function() {
+      XView.prototype.render.call(this);
+
+      this.hideFallback();
+      this.hideLoading();
+
+      return this;
     },
 
     /**
@@ -290,7 +312,7 @@
         parent: this
       });
 
-      this.addView(this.itemContainer || null, { id: model.cid }, view);
+      this.addView(this.listSelector || null, { id: model.cid }, view);
 
       if (this.rendered) {
         this.renderView(model.cid);
@@ -314,34 +336,80 @@
 
       if (!this.rendered) return;
 
-      var $container = this.getItemContainer();
+      var $list = this.getListEl();
 
       if (this.collection.length) {
-        $container.html('');
+        $list.html('');
         this.renderViews();
       } else {
-        $container.html(this.noResultsTemplate());
+        $list.hide();
       }
+
+      this.toggleFallback();
     },
 
     /**
-     * Get the item container (if rendered). Uses the this.itemContainer selector if available;
+     * Get the item container (if rendered). Uses the this.listSelector selector if available;
      * otherwise the main element is returned
      *
      * @return {jQuery}
      */
-    getItemContainer: function() {
+    getListEl: function() {
       if (!this.rendered) throw new Error('View has not yet been rendered');
 
       var $el;
 
-      if (this.itemContainer) {
-        $el = this.$(this.itemContainer);
+      if (this.listSelector) {
+        $el = this.$(this.listSelector);
       } else {
         $el = this.$el;
       }
 
       return $el;
+    },
+
+    /**
+     * Shows/hides the fallback element based on whether there are any items
+     * in the collection
+     */
+    toggleFallback: function() {
+      var fallbackSelector = this.fallbackSelector;
+      if (!fallbackSelector) return;
+
+      var $fallback = this.$(fallbackSelector);
+
+      if (this.collection.length) {
+        $fallback.hide();
+      } else {
+        $fallback.show();
+      }
+    },
+
+    /**
+     * Hides the fallback element, which is shown if the collection is empty.
+     */
+    hideFallback: function() {      
+      if (!this.fallbackSelector) return;
+
+      this.$(this.fallbackSelector).hide();
+    },
+
+    /**
+     * Shows the loading element, which is shown while the collection is loading
+     */
+    showLoading: function() {
+      if (!this.loadingSelector) return;      
+
+      this.$(this.loadingSelector).show();
+    },
+
+    /**
+     * Hides the loading element, which is shown while the collection is loading
+     */
+    hideLoading: function() {      
+      if (!this.loadingSelector) return;
+
+      this.$(this.loadingSelector).hide();
     }
   });
 

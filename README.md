@@ -76,6 +76,10 @@ parent.remove();
 
 
 ##Changelog
+###1.3.x
+- CollectionView: change itemContainer to listSelector
+- CollectionView: add fallbackSelector and loadingSelector
+
 ###1.2.x
 - Add CollectionView, accessible through XView.Collection or Backbone.XView.Collection
 
