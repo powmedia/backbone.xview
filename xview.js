@@ -279,25 +279,32 @@
       this.listenTo(this.collection, 'add', this.addItem);
       this.listenTo(this.collection, 'remove', this.removeItem);
       this.listenTo(this.collection, 'reset', this.resetItems);
+      this.listenTo(this.collection, 'request', this.onRequest);
+      this.listenTo(this.collection, 'sync', this.onSync);
 
-      this.listenTo(this.collection, 'request', function() {
-        this.showLoading();
-        this.hideFallback();
-      });
-
-      this.listenTo(this.collection, 'sync', function() {
-        this.hideLoading();
-        this.toggleFallback();
-      });
-
-      this.resetItems();
+      //Render items if already in the collection
+      if (this.collection.length) this.resetItems();
     },
 
     render: function() {
       XView.prototype.render.call(this);
 
-      this.hideFallback();
-      this.hideLoading();
+      //Show loading content if loading began before view was rendered
+      if (this.loadingSelector) {
+        var $loading = this.$(this.loadingSelector);
+
+        if (this.isLoading) {
+          $loading.show();
+        } else {
+          $loading.hide();
+        }
+      }
+
+      if (this.fallbackSelector) {
+        var $fallback = this.$(this.fallbackSelector);
+
+        $fallback.hide();
+      }
 
       return this;
     },
@@ -313,10 +320,6 @@
       });
 
       this.addView(this.listSelector || null, { id: model.cid }, view);
-
-      if (this.rendered) {
-        this.renderView(model.cid);
-      }
     },
 
     /**
@@ -334,18 +337,10 @@
 
       this.collection.each(_.bind(this.addItem, this));
 
-      if (!this.rendered) return;
-
-      var $list = this.getListEl();
-
-      if (this.collection.length) {
-        $list.html('');
-        this.renderViews();
-      } else {
-        $list.hide();
+      //Show fallback if there are no items
+      if (this.fallbackSelector && !this.collection.length) {
+        this.$(this.fallbackSelector).show();
       }
-
-      this.toggleFallback();
     },
 
     /**
@@ -369,47 +364,31 @@
     },
 
     /**
-     * Shows/hides the fallback element based on whether there are any items
-     * in the collection
+     * Callback for when a request has started, i.e. collection is in loading state
      */
-    toggleFallback: function() {
-      var fallbackSelector = this.fallbackSelector;
-      if (!fallbackSelector) return;
+    onRequest: function() {
+      this.isLoading = true;
 
-      var $fallback = this.$(fallbackSelector);
-
-      if (this.collection.length) {
-        $fallback.hide();
-      } else {
-        $fallback.show();
+      //Show loading if there are no items
+      if (this.loadingSelector && !this.collection.length) {
+        this.$(this.loadingSelector).show();
       }
     },
 
     /**
-     * Hides the fallback element, which is shown if the collection is empty.
+     * Callback for when a request has ended, i.e. collection is not in loading state
      */
-    hideFallback: function() {      
-      if (!this.fallbackSelector) return;
+    onSync: function() {
+      //Hide loading
+      this.isLoading = false;
+      if (this.loadingSelector) {
+        this.$(this.loadingSelector).hide();
+      }
 
-      this.$(this.fallbackSelector).hide();
-    },
-
-    /**
-     * Shows the loading element, which is shown while the collection is loading
-     */
-    showLoading: function() {
-      if (!this.loadingSelector) return;      
-
-      this.$(this.loadingSelector).show();
-    },
-
-    /**
-     * Hides the loading element, which is shown while the collection is loading
-     */
-    hideLoading: function() {      
-      if (!this.loadingSelector) return;
-
-      this.$(this.loadingSelector).hide();
+      //Show fallback if there are no items
+      if (this.fallbackSelector && !this.collection.length) {
+        this.$(this.fallbackSelector).show();
+      }
     }
   });
 
