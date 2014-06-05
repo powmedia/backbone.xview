@@ -339,13 +339,13 @@
     },
 
     /**
+     * Renders a new model
+     * 
      * @param {Model} model
      */
     addItem: function(model) {
       var view = new this.itemView({
-        model: model,
-        listView: this, //TODO: remove listView in favour of 'parent'?
-        parent: this
+        model: model
       });
 
       this.addView(this.listSelector || null, { id: model.cid }, view);
@@ -370,26 +370,6 @@
       if (!this.collection.length) {
         this.showFallback();
       }
-    },
-
-    /**
-     * Get the item container (if rendered). Uses the this.listSelector selector if available;
-     * otherwise the main element is returned
-     *
-     * @return {jQuery}
-     */
-    getListEl: function() {
-      if (!this.rendered) throw new Error('View has not yet been rendered');
-
-      var $el;
-
-      if (this.listSelector) {
-        $el = this.$(this.listSelector);
-      } else {
-        $el = this.$el;
-      }
-
-      return $el;
     },
 
     /**
