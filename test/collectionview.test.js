@@ -27,19 +27,24 @@ $(document).ready(function() {
 
   module('CollectionView#render', {
     setup: function() {
-      this.CV = CollectionView.extend({
-        itemView: XView,
-        template: _.template('<div class="loading">Loading</div><div class="fallback">Fallback</div>'),
-        loadingSelector: '.loading',
-        fallbackSelector: '.fallback'
-      });
+      this.sinon = sinon.sandbox.create();
+
+      this.sinon.spy(CollectionView.prototype, 'showFallback');
+      this.sinon.spy(CollectionView.prototype, 'hideFallback');
+      this.sinon.spy(CollectionView.prototype, 'showLoading');
+      this.sinon.spy(CollectionView.prototype, 'hideLoading');
+    },
+
+    teardown: function() {
+      this.sinon.restore();
     }
   });
 
   test('shows loading if in loading state', function() {
     var collection = new Backbone.Collection();
 
-    var view = new this.CV({
+    var view = new CollectionView({
+      itemView: XView,
       collection: collection
     });
 
@@ -47,13 +52,14 @@ $(document).ready(function() {
 
     view.render();
 
-    equal(view.$('.loading').css('display'), 'block');
+    ok(view.showLoading.calledOnce);
   });
 
   test('hides loading if not in loading state', function() {
     var collection = new Backbone.Collection();
 
-    var view = new this.CV({
+    var view = new CollectionView({
+      itemView: XView,
       collection: collection
     });
 
@@ -61,13 +67,14 @@ $(document).ready(function() {
 
     view.render();
 
-    equal(view.$('.loading').css('display'), 'none');
+    ok(view.hideLoading.calledOnce);
   });
 
   test('shows fallback if collection is empty and not loading', function() {
     var collection = new Backbone.Collection([]);
 
-    var view = new this.CV({
+    var view = new CollectionView({
+      itemView: XView,
       collection: collection
     });
 
@@ -75,13 +82,14 @@ $(document).ready(function() {
 
     view.render();
 
-    equal(view.$('.fallback').css('display'), 'block');
+    ok(view.showFallback.calledOnce);
   });
 
   test('hides fallback if collection is empty but loading', function() {
     var collection = new Backbone.Collection([]);
 
-    var view = new this.CV({
+    var view = new CollectionView({
+      itemView: XView,
       collection: collection
     });
 
@@ -89,19 +97,20 @@ $(document).ready(function() {
 
     view.render();
 
-    equal(view.$('.fallback').css('display'), 'none');
+    ok(view.hideFallback.calledOnce);
   });
 
   test('hides fallback if collection has models', function() {
     var collection = new Backbone.Collection([{ id: 1 }]);
 
-    var view = new this.CV({
+    var view = new CollectionView({
+      itemView: XView,
       collection: collection
     });
 
     view.render();
 
-    equal(view.$('.fallback').css('display'), 'none');
+    ok(view.hideFallback.calledOnce);
   });
   
 });
