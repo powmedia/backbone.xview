@@ -289,32 +289,53 @@
     render: function() {
       XView.prototype.render.call(this);
 
-      //Show loading content if loading began before view was rendered
-      if (this.loadingSelector) {
-        var $loading = this.$(this.loadingSelector);
+      //Show loading if collection is being fetched
+      if (this.isLoading) {
+        this.showLoading();
 
-        if (this.isLoading) {
-          $loading.show();
-        } else {
-          $loading.hide();
-        }
+        this.hideFallback();
       }
 
-      if (this.fallbackSelector) {
-        var $fallback = this.$(this.fallbackSelector);
+      //Not loading; show fallback if collection is empty
+      else {
+        this.hideLoading();
 
-        if (this.isLoading) {
-          $fallback.hide();
+        if (this.collection.length) {
+          this.hideFallback();
         } else {
-          if (this.collection.length) {
-            $fallback.hide();
-          } else {
-            $fallback.show();
-          }
+          this.showFallback();
         }
       }
 
       return this;
+    },
+
+    /**
+     * Shows the fallback element using this.fallbackSelector
+     */
+    showFallback: function() {
+      this.$(this.fallbackSelector).show();
+    },
+
+    /**
+     * Hides the fallback element using this.fallbackSelector
+     */
+    hideFallback: function() {
+      this.$(this.fallbackSelector).hide();
+    },
+
+    /**
+     * Shows the loading element using this.loadingSelector
+     */
+    showLoading: function() {
+      this.$(this.loadingSelector).show();
+    },
+
+    /**
+     * Hides the loading element using this.loadingSelector
+     */
+    hideLoading: function() {
+      this.$(this.loadingSelector).hide();
     },
 
     /**
@@ -378,8 +399,8 @@
       this.isLoading = true;
 
       //Show loading if there are no items
-      if (this.loadingSelector && !this.collection.length) {
-        this.$(this.loadingSelector).show();
+      if (!this.collection.length) {
+        this.showLoading();
       }
     },
 
@@ -389,13 +410,11 @@
     onSync: function() {
       //Hide loading
       this.isLoading = false;
-      if (this.loadingSelector) {
-        this.$(this.loadingSelector).hide();
-      }
+      this.hideLoading();
 
       //Show fallback if there are no items
-      if (this.fallbackSelector && !this.collection.length) {
-        this.$(this.fallbackSelector).show();
+      if (!this.collection.length) {
+        this.showFallback();
       }
     }
   });
