@@ -367,8 +367,8 @@
       this.collection.each(_.bind(this.addItem, this));
 
       //Show fallback if there are no items
-      if (this.fallbackSelector && !this.collection.length) {
-        this.$(this.fallbackSelector).show();
+      if (!this.collection.length) {
+        this.showFallback();
       }
     },
 
