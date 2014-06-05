@@ -188,5 +188,56 @@ $(document).ready(function() {
 
     equal(view.$('.loading').css('display'), 'none');
   });
+
+
+  module('CollectionView#addItem');
+
+  test('renders a new model - without a listSelector', function() {
+    var ItemView = XView.extend(),
+        model = new Backbone.Model();
+
+    var collectionView = new CollectionView({
+      itemView: ItemView,
+      collection: new Backbone.Collection()
+    });
+
+    sinon.spy(collectionView, 'addView');
+
+    collectionView.addItem(model);
+
+    //Test addView was called correctly
+    var args = collectionView.addView.args[0],
+        selectorArg = args[0],
+        optionsArg = args[1],
+        viewArg = args[2];
+
+    equal(selectorArg, null);
+    deepEqual(optionsArg, { id: model.cid });
+
+    ok(viewArg instanceof ItemView);
+    equal(viewArg.model, model);
+  });
+
+  test('renders a new model - with a listSelector', function() {
+    var ItemView = XView.extend(),
+        model = new Backbone.Model();
+
+    var collectionView = new CollectionView({
+      itemView: ItemView,
+      collection: new Backbone.Collection()
+    });
+
+    collectionView.listSelector = '.list';
+
+    sinon.spy(collectionView, 'addView');
+
+    collectionView.addItem(model);
+
+    //Test addView was called correctly
+    var args = collectionView.addView.args[0],
+        selectorArg = args[0];
+
+    equal(selectorArg, '.list');
+  });
   
 });
