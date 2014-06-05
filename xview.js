@@ -281,9 +281,6 @@
       this.listenTo(this.collection, 'reset', this.resetItems);
       this.listenTo(this.collection, 'request', this.onRequest);
       this.listenTo(this.collection, 'sync', this.onSync);
-
-      //Render items if already in the collection
-      //if (this.collection.length) this.resetItems();
     },
 
     render: function() {
@@ -296,15 +293,11 @@
         this.hideFallback();
       }
 
-      //Not loading; show fallback if collection is empty
+      //Not loading; show items
       else {
         this.hideLoading();
 
-        if (this.collection.length) {
-          this.hideFallback();
-        } else {
-          this.showFallback();
-        }
+        this.resetItems();
       }
 
       return this;
@@ -370,7 +363,7 @@
       if (!this.collection.length) {
         this.showFallback();
       } else {
-        this.hideFallback(); //NEW
+        this.hideFallback();
       }
     },
 

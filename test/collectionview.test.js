@@ -72,6 +72,7 @@ $(document).ready(function() {
       this.sinon.spy(CollectionView.prototype, 'hideFallback');
       this.sinon.spy(CollectionView.prototype, 'showLoading');
       this.sinon.spy(CollectionView.prototype, 'hideLoading');
+      this.sinon.spy(CollectionView.prototype, 'resetItems');
     },
 
     teardown: function() {
@@ -79,7 +80,7 @@ $(document).ready(function() {
     }
   });
 
-  test('shows loading if in loading state', function() {
+  test('when loading - shows loading, hides fallback', function() {
     var collection = new Backbone.Collection();
 
     var view = new CollectionView({
@@ -92,9 +93,10 @@ $(document).ready(function() {
     view.render();
 
     ok(view.showLoading.calledOnce);
+    ok(view.hideFallback.calledOnce);
   });
 
-  test('hides loading if not in loading state', function() {
+  test('when not loading - hides loading, resets items', function() {
     var collection = new Backbone.Collection();
 
     var view = new CollectionView({
@@ -107,49 +109,7 @@ $(document).ready(function() {
     view.render();
 
     ok(view.hideLoading.calledOnce);
-  });
-
-  test('shows fallback if collection is empty and not loading', function() {
-    var collection = new Backbone.Collection([]);
-
-    var view = new CollectionView({
-      itemView: XView,
-      collection: collection
-    });
-
-    view.isLoading = false;
-
-    view.render();
-
-    ok(view.showFallback.calledOnce);
-  });
-
-  test('hides fallback if collection is empty but loading', function() {
-    var collection = new Backbone.Collection([]);
-
-    var view = new CollectionView({
-      itemView: XView,
-      collection: collection
-    });
-
-    view.isLoading = true;
-
-    view.render();
-
-    ok(view.hideFallback.calledOnce);
-  });
-
-  test('hides fallback if collection has models', function() {
-    var collection = new Backbone.Collection([{ id: 1 }]);
-
-    var view = new CollectionView({
-      itemView: XView,
-      collection: collection
-    });
-
-    view.render();
-
-    equal(view.hideFallback.callCount, 1);
+    ok(view.resetItems.calledOnce);
   });
 
 
