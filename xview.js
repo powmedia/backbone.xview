@@ -283,7 +283,7 @@
       this.listenTo(this.collection, 'sync', this.onSync);
 
       //Render items if already in the collection
-      if (this.collection.length) this.resetItems();
+      //if (this.collection.length) this.resetItems();
     },
 
     render: function() {
@@ -369,6 +369,8 @@
       //Show fallback if there are no items
       if (!this.collection.length) {
         this.showFallback();
+      } else {
+        this.hideFallback(); //NEW
       }
     },
 
