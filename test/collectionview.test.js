@@ -112,5 +112,81 @@ $(document).ready(function() {
 
     ok(view.hideFallback.calledOnce);
   });
+
+
+  module('CollectionView#showFallback');
+
+  test('shows the fallback element found with CollectionView#fallbackSelector', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.template = _.template('<div class="fallback"></div>');
+    view.fallbackSelector = '.fallback';
+
+    view.render();
+
+    view.showFallback();
+
+    equal(view.$('.fallback').css('display'), 'block');
+  });
+
+
+  module('CollectionView#hideFallback');
+
+  test('hides the fallback element found with CollectionView#fallbackSelector', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.template = _.template('<div class="fallback"></div>');
+    view.fallbackSelector = '.fallback';
+
+    view.render();
+
+    view.hideFallback();
+
+    equal(view.$('.fallback').css('display'), 'none');
+  });
+
+
+  module('CollectionView#showLoading');
+
+  test('shows the loading element found with CollectionView#loadingSelector', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.template = _.template('<div class="loading"></div>');
+    view.loadingSelector = '.loading';
+
+    view.render();
+
+    view.showLoading();
+
+    equal(view.$('.loading').css('display'), 'block');
+  });
+
+
+  module('CollectionView#hideLoading');
+
+  test('hides the loading element found with CollectionView#loadingSelector', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.template = _.template('<div class="loading"></div>');
+    view.loadingSelector = '.loading';
+
+    view.render();
+
+    view.hideLoading();
+
+    equal(view.$('.loading').css('display'), 'none');
+  });
   
 });
