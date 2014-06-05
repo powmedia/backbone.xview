@@ -76,6 +76,10 @@ parent.remove();
 
 
 ##Changelog
+###1.4.0
+- Fixes for fallback, loading and initial render state
+- Add methods for showing/hiding fallback/loading elements so they can be overridden
+
 ###1.3.x
 - CollectionView: change itemContainer to listSelector
 - CollectionView: add fallbackSelector and loadingSelector
