@@ -303,7 +303,15 @@
       if (this.fallbackSelector) {
         var $fallback = this.$(this.fallbackSelector);
 
-        $fallback.hide();
+        if (this.isLoading) {
+          $fallback.hide();
+        } else {
+          if (this.collection.length) {
+            $fallback.hide();
+          } else {
+            $fallback.show();
+          }
+        }
       }
 
       return this;
