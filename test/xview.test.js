@@ -241,6 +241,27 @@ $(document).ready(function() {
     equal(view.$el.html(), '<i>HELLO</i>');
   });
 
+  test('with template and renderHelpers - locals overrides renderHelpers', function() {
+    var view = new XView();
+
+    view.renderHelpers = {
+      shout: function(str) {
+        return str.toUpperCase();
+      }
+    }
+
+    view.template = _.template('<i><%= shout(message) %></i>');
+
+    view.templateData = {
+      message: 'Hello', 
+      shout: function(str) { return str.replace('Hello', 'Goodbye') }
+    };
+
+    view.render();
+
+    equal(view.$el.html(), '<i>Goodbye</i>');
+  });
+
   test('with template and unwrap - replaces element', 2, function() {
     var view = new XView();
 

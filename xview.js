@@ -154,7 +154,7 @@
         var data = _.result(this, 'templateData');
 
         //Add template helpers
-        _.extend(data, this.renderHelpers);
+        data = _.extend({}, this.renderHelpers, data);
 
         //Render HTML
         html = Backbone.$(this.renderTemplate(data));

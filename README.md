@@ -78,6 +78,7 @@ parent.remove();
 ##Changelog
 ###1.5.0
 - Add XView#renderTemplate() for overriding how templates are executed
+- Locals override renderHelpers
 
 ###1.4.0
 - Fixes for fallback, loading and initial render state
