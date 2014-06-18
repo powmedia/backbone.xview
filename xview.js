@@ -128,6 +128,17 @@
     },
 
     /**
+     * Creates the HTML from the template function
+     *
+     * @param {Object} data
+     *
+     * @return {String}
+     */
+    renderTemplate: function(data) {
+      return this.template(data);
+    },
+
+    /**
      * Renders the main element with the template.
      *
      * If using a template and the 'unwrap' property is true then the template HTML will not be wrapped
@@ -140,13 +151,13 @@
         var html = '';
 
         //Get data for template
-        var data = _.isFunction(this.templateData) ? this.templateData() : this.templateData;
+        var data = _.result(this, 'templateData');
 
         //Add template helpers
         _.extend(data, this.renderHelpers);
 
         //Render HTML
-        html = Backbone.$(this.template(data));
+        html = Backbone.$(this.renderTemplate(data));
 
         //If using unwrap and this is an update, only replace the main element contents
         //This ensures the view that's actually in the DOM is updated

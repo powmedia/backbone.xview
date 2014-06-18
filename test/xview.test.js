@@ -140,6 +140,17 @@ $(document).ready(function() {
   });
 
 
+  module('XView#renderTemplate()');
+
+  test('renders the view template', function() {
+    var view = new XView();
+
+    view.template = _.template('Hello <%= name %>');
+
+    equal(view.renderTemplate({ name: 'John' }), 'Hello John');
+  });
+
+
   module('XView#render', {
     setup: function() {
       this.sinon = sinon.sandbox.create();

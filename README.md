@@ -76,6 +76,9 @@ parent.remove();
 
 
 ##Changelog
+###1.5.0
+- Add XView#renderTemplate() for overriding how templates are executed
+
 ###1.4.0
 - Fixes for fallback, loading and initial render state
 - Add methods for showing/hiding fallback/loading elements so they can be overridden
