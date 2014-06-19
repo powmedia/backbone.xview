@@ -263,11 +263,11 @@
     //Selector string for where items will be inserted. If not set, will default to the root element
     listSelector: null,
 
-    //Selector string for content to show if there are no items
-    fallbackSelector: null,
+    //View to show when if collection is empty
+    fallbackView: null,
 
-    //Selector string for content to show if there are no items
-    loadingSelector: null,
+    //View to show when loading
+    loadingView: null,
 
     /**
      * Constructor
@@ -315,31 +315,51 @@
     },
 
     /**
-     * Shows the fallback element using this.fallbackSelector
+     * Shows the fallback view
      */
     showFallback: function() {
-      this.$(this.fallbackSelector).show();
+      if (this.getView('fallback')) return;
+
+      var view = this.fallbackView;
+      if (!view) return;
+
+      //Create view instance if required
+      if (!(view instanceof Backbone.View)) {
+        view = new view();
+      }
+
+      this.addView(this.listSelector, { id: 'fallback' }, view);
     },
 
     /**
-     * Hides the fallback element using this.fallbackSelector
+     * Hides the fallback view
      */
     hideFallback: function() {
-      this.$(this.fallbackSelector).hide();
+      this.removeView('fallback');
     },
 
     /**
-     * Shows the loading element using this.loadingSelector
+     * Shows the loading view
      */
     showLoading: function() {
-      this.$(this.loadingSelector).show();
+      if (this.getView('loading')) return;
+
+      var view = this.loadingView;
+      if (!view) return;
+
+      //Create view instance if required
+      if (!(view instanceof Backbone.View)) {
+        view = new view();
+      }
+
+      this.addView(this.listSelector, { id: 'loading' }, view);
     },
 
     /**
-     * Hides the loading element using this.loadingSelector
+     * Hides the loading view
      */
     hideLoading: function() {
-      this.$(this.loadingSelector).hide();
+      this.removeView('loading');
     },
 
     /**

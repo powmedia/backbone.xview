@@ -76,6 +76,9 @@ parent.remove();
 
 
 ##Changelog
+###2.0.0
+- Change the way CollectionView#showLoading and #showFallback work; now uses views to enable more complex use cases
+
 ###1.5.0
 - Add XView#renderTemplate() for overriding how templates are executed
 - Locals override renderHelpers

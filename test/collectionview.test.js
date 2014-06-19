@@ -113,45 +113,113 @@ $(document).ready(function() {
   });
 
 
-  module('CollectionView#showFallback');
+  module('CollectionView#showFallback', {
+    setup: function() {
+      this.sinon = sinon.sandbox.create();
 
-  test('shows the fallback element found with CollectionView#fallbackSelector', function() {
+      this.sinon.spy(CollectionView.prototype, 'addView');
+    },
+
+    teardown: function() {
+      this.sinon.restore();
+    }
+  });
+
+  test('shows fallback view - when fallbackView is a View constructor', function() {
     var view = new CollectionView({
       itemView: XView,
       collection: new Backbone.Collection()
     });
 
-    view.template = _.template('<div class="fallback"></div>');
-    view.fallbackSelector = '.fallback';
+    view.listSelector = '.list';
 
-    view.render();
+    var FallbackView = XView.extend();
+
+    view.fallbackView = FallbackView;
+
 
     view.showFallback();
 
-    equal(view.$('.fallback').css('display'), 'block');
+
+    var args = view.addView.args[0],
+        selectorArg = args[0],
+        optionsArg = args[1],
+        viewArg = args[2];
+
+    equal(view.addView.callCount, 1);
+
+    equal(selectorArg, '.list');
+    equal(optionsArg.id, 'fallback');
+    ok(viewArg instanceof FallbackView);
+  });
+
+  test('shows fallback view - when fallbackView is a View instance', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.listSelector = '.list';
+
+    var fallbackView = new XView();
+
+    view.fallbackView = fallbackView;
+
+
+    view.showFallback();
+
+
+    var args = view.addView.args[0],
+        selectorArg = args[0],
+        optionsArg = args[1],
+        viewArg = args[2];
+
+    equal(view.addView.callCount, 1);
+
+    equal(selectorArg, '.list');
+    equal(optionsArg.id, 'fallback');
+    equal(viewArg, fallbackView);
+  });
+
+  test('does not add view if already added', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.fallbackView = new XView();
+
+
+    //Show
+    view.showFallback();
+
+    equal(view.addView.callCount, 1);
+
+    //Show again, call count should be the same
+    view.showFallback();
+
+    equal(view.addView.callCount, 1);
   });
 
 
   module('CollectionView#hideFallback');
 
-  test('hides the fallback element found with CollectionView#fallbackSelector', function() {
+  test('removes the fallback view', function() {
     var view = new CollectionView({
       itemView: XView,
       collection: new Backbone.Collection()
     });
 
-    view.template = _.template('<div class="fallback"></div>');
-    view.fallbackSelector = '.fallback';
-
-    view.render();
+    sinon.spy(view, 'removeView');
 
     view.hideFallback();
 
-    equal(view.$('.fallback').css('display'), 'none');
+    equal(view.removeView.callCount, 1);
+    equal(view.removeView.args[0][0], 'fallback');
   });
 
 
-  module('CollectionView#showLoading');
+  /*module('CollectionView#showLoading');
 
   test('shows the loading element found with CollectionView#loadingSelector', function() {
     var view = new CollectionView({
@@ -186,6 +254,112 @@ $(document).ready(function() {
     view.hideLoading();
 
     equal(view.$('.loading').css('display'), 'none');
+  });*/
+
+
+  module('CollectionView#showLoading', {
+    setup: function() {
+      this.sinon = sinon.sandbox.create();
+
+      this.sinon.spy(CollectionView.prototype, 'addView');
+    },
+
+    teardown: function() {
+      this.sinon.restore();
+    }
+  });
+
+  test('shows loading view - when loadingView is a View constructor', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.listSelector = '.list';
+
+    var LoadingView = XView.extend();
+
+    view.loadingView = LoadingView;
+
+
+    view.showLoading();
+
+
+    var args = view.addView.args[0],
+        selectorArg = args[0],
+        optionsArg = args[1],
+        viewArg = args[2];
+
+    equal(view.addView.callCount, 1);
+
+    equal(selectorArg, '.list');
+    equal(optionsArg.id, 'loading');
+    ok(viewArg instanceof LoadingView);
+  });
+
+  test('shows loading view - when loadingView is a View instance', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.listSelector = '.list';
+
+    var loadingView = new XView();
+
+    view.loadingView = loadingView;
+
+
+    view.showLoading();
+
+
+    var args = view.addView.args[0],
+        selectorArg = args[0],
+        optionsArg = args[1],
+        viewArg = args[2];
+
+    equal(view.addView.callCount, 1);
+
+    equal(selectorArg, '.list');
+    equal(optionsArg.id, 'loading');
+    equal(viewArg, loadingView);
+  });
+
+  test('does not add view if already added', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    view.loadingView = new XView();
+
+
+    //Show
+    view.showLoading();
+
+    equal(view.addView.callCount, 1);
+
+    //Show again, call count should be the same
+    view.showLoading();
+
+    equal(view.addView.callCount, 1);
+  });
+
+
+  module('CollectionView#hideLoading');
+
+  test('removes the loading view', function() {
+    var view = new CollectionView({
+      itemView: XView,
+      collection: new Backbone.Collection()
+    });
+
+    sinon.spy(view, 'removeView');
+
+    view.hideLoading();
+
+    equal(view.removeView.callCount, 1);
+    equal(view.removeView.args[0][0], 'loading');
   });
 
 
